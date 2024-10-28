@@ -40,3 +40,4 @@ http://localhost:8080/{hash}
 
 buscar pelo hash, pegar origin_location
 
+# Shortener URL
