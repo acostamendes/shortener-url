@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.zip.CRC32;
 
 @RestController
+@RequestMapping ("/api/v1/shortener")
 public class ShortenerController {
     private final ShortenerService shortenerService;
 
@@ -20,7 +21,7 @@ public class ShortenerController {
         this.shortenerService = shortenerService;
     }
 
-    @PostMapping("/shortener")
+    @PostMapping
     public ResponseEntity<Shortener> createShortener(@RequestBody Map<String, String> request) {
         String originLocation = request.get("origin_location");
         if (originLocation == null || originLocation.isEmpty()) {
@@ -47,17 +48,17 @@ public class ShortenerController {
     }
 
 
-    @DeleteMapping("/shortener/{id}")
+    @DeleteMapping("/{id}")
     public void deleteShortener(@PathVariable Long id) {
         shortenerService.deleteShortener(id);
     }
 
-    @GetMapping("/shortener/{hash}")
+    @GetMapping("/{hash}")
     public Shortener findByHash(@PathVariable String hash) {
         return shortenerService.findByHash(hash);
     }
 
-    @GetMapping("/shortener/redirect/{hash}")
+    @GetMapping("/redirect/{hash}")
     public void redirect(@PathVariable String hash, HttpServletResponse response) throws IOException {
         Shortener shortener = shortenerService.findByHash(hash);
         shortener.setCount(String.valueOf(Integer.parseInt(shortener.getCount()) + 1));
@@ -65,7 +66,7 @@ public class ShortenerController {
         response.sendRedirect(shortener.getOriginLocation());
     }
 
-    @GetMapping("/shortener")
+    @GetMapping
     public Iterable<Shortener> findAll() {
         return shortenerService.findAll();
     }
