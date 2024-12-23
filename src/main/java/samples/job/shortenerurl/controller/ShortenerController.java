@@ -71,3 +71,4 @@ public class ShortenerController {
         return shortenerService.findAll();
     }
 }
+
