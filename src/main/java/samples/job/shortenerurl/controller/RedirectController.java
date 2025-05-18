@@ -25,7 +25,7 @@ public class RedirectController {
             response.sendError(HttpServletResponse.SC_NOT_FOUND,"Hash not found");
             return;
         }
-        shortener.setCount(String.valueOf(Integer.parseInt(shortener.getCount()) + 1));  // Incrementa o contador de acessos
+        shortener.setCount(shortener.getCount() + 1);  // Incrementa o contador de acessos
         shortenerService.updateShortener(shortener);  // Incrementa o contador de acessos
         response.sendRedirect(shortener.getOriginLocation()); // Redireciona para a URL original
 

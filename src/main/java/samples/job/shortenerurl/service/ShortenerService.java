@@ -3,22 +3,26 @@ package samples.job.shortenerurl.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import samples.job.shortenerurl.ShotenerDTO.ShortenerDTO;
 import samples.job.shortenerurl.model.Shortener;
 import samples.job.shortenerurl.repository.ShortenerRepository;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.zip.CRC32;
 
 @Service
 public class ShortenerService {
 
     private final ShortenerRepository shortenerRepository;
+    private final ServiceEncrypt serviceEncrypt;
+
 
     @Autowired
-    public ShortenerService(ShortenerRepository repository) {
+    public ShortenerService(ShortenerRepository repository, ServiceEncrypt serviceEncrypt) {
         this.shortenerRepository = repository;
+        this.serviceEncrypt = serviceEncrypt;
     }
+
 
     //@Transactional
     //public Shortener createShortener(Shortener shortener) {
@@ -47,20 +51,24 @@ public class ShortenerService {
     }
 
     @Transactional
-    public Shortener createShortener(Shortener shortener) {
-        if (shortener.getOriginLocation() == null || shortener.getOriginLocation().isEmpty()) {
+    public Shortener createShortener(ShortenerDTO dto) {
+        if (dto.getOriginLocation() == null || dto.getOriginLocation().isEmpty()) {
             throw new IllegalArgumentException("Origin location cannot be null or empty");
         }
-        shortener.setTimestamp(Timestamp.valueOf(LocalDateTime.now()));
+        dto.setTimestamp(Timestamp.valueOf(LocalDateTime.now()));
 
-        CRC32 crc32 = new CRC32();
-        crc32.update(shortener.getOriginLocation().getBytes());
-        long hashValue = crc32.getValue();
+        String originLocation = dto.getOriginLocation();
+        String hash = ServiceEncrypt.generateCRC32Hash(dto.getOriginLocation());
+        dto.setHash(hash);
 
-        String hasString = Long.toHexString(hashValue);
+        dto.setHash(hash);
+        dto.setCount(0);
 
-        shortener.setHash(hasString);
-        shortener.setCount("0");
+        Shortener shortener = new Shortener();
+        shortener.setOriginLocation(dto.getOriginLocation());
+        shortener.setHash(dto.getHash());
+        shortener.setTimestamp(dto.getTimestamp());
+        shortener.setCount(dto.getCount());
 
         return shortenerRepository.save(shortener);
     }

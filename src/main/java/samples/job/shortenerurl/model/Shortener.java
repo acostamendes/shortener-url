@@ -1,6 +1,8 @@
 package samples.job.shortenerurl.model;
 
 import jakarta.persistence.*;
+import org.springframework.beans.BeanUtils;
+import samples.job.shortenerurl.ShotenerDTO.ShortenerDTO;
 
 import java.sql.Timestamp;
 
@@ -17,8 +19,16 @@ public class Shortener {
     @Column(name = "hash")
     private String hash;
     @Column(name = "count")
-    private String count;
+    private Integer count;
 
+
+    public Shortener(ShortenerDTO shortener){
+        BeanUtils.copyProperties(shortener, this);
+    }
+
+    public Shortener(){
+
+    }
 
     public Long getId() { return id; }
     public void setId(Long value) { this.id = value; }
@@ -33,8 +43,8 @@ public class Shortener {
     public String getHash() { return hash; }
     public void setHash(String value) { this.hash = value; }
 
-    public String getCount() { return count; }
-    public void setCount(String value) { this.count = value; }
+    public Integer getCount() { return count; }
+    public void setCount(Integer value) { this.count = value; }
 
 
 }
