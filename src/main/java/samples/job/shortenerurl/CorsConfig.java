@@ -13,7 +13,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry){
                 registry.addMapping("/api/**")
-                        .allowedOrigins("http://172.27.25.228:3000","http://localhost:3000") // Frontend React
+                        .allowedOrigins("http://xpto:3000","http://localhost:3000") // Frontend React
                         .allowedMethods("*")
                         .allowedHeaders("*")
                         .allowCredentials(false); //Get, Post, Delete etc
